@@ -53,3 +53,15 @@ export function updateLetterReaction(id: string, reaction: string, comment: stri
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
+
+const TOKEN_KEY = 'kurohisory_recipient_token_v1'
+
+/** このデバイス固有の匿名トークンを取得（なければ生成して保存） */
+export function getOrCreateRecipientToken(): string {
+  if (typeof window === 'undefined') return ''
+  const existing = localStorage.getItem(TOKEN_KEY)
+  if (existing) return existing
+  const token = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}-${Math.random().toString(36).slice(2, 11)}`
+  localStorage.setItem(TOKEN_KEY, token)
+  return token
+}

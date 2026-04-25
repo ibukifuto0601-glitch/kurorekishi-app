@@ -9,8 +9,9 @@ import {
   addToHistory,
   updateLetterReaction,
   generateId,
+  getOrCreateRecipientToken,
 } from '@/lib/storage'
-import { fetchRandomLetter, insertReaction } from '@/lib/supabase'
+import { fetchRandomLetter, recordDelivery, insertReaction } from '@/lib/supabase'
 import { getRandomStory } from '@/lib/dummyData'
 import EnvelopeAnimation from './EnvelopeAnimation'
 import { Letter } from '@/lib/types'
@@ -32,9 +33,12 @@ export default function ReceivePage() {
       return
     }
 
-    // Supabase から他ユーザーの投稿をランダム取得、なければダミーにフォールバック
-    fetchRandomLetter(pending.id).then((supabaseLetter) => {
+    // Supabase から他ユーザーの投稿をスマート取得、なければダミーにフォールバック
+    const token = getOrCreateRecipientToken()
+    fetchRandomLetter(pending.id, token).then((supabaseLetter) => {
       if (supabaseLetter) {
+        // 配信を即記録（同じ手紙が再度届かないように）
+        recordDelivery(supabaseLetter.id, token)
         setReceivedLetter(supabaseLetter)
       } else {
         const story = getRandomStory()

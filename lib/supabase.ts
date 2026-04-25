@@ -20,8 +20,39 @@ export async function insertLetter(content: string, envelopeColor: string): Prom
   return data.id as string
 }
 
-/** 自分が送った手紙以外からランダムに1通取得する */
-export async function fetchRandomLetter(excludeId: string): Promise<Letter | null> {
+/**
+ * 受信者トークンに基づいてスマート配信:
+ * 1. 同じ人に同じ手紙は届かない
+ * 2. 配信回数が少ない手紙（= まだリアクションをもらっていない）を優先
+ * 3. SQL 関数が未作成の場合はシンプルクエリにフォールバック
+ */
+export async function fetchRandomLetter(
+  excludeId: string,
+  recipientToken: string,
+): Promise<Letter | null> {
+  // ── RPC によるスマート配信を試みる ──
+  const rpc = await supabase.rpc('get_letter_for_recipient', {
+    p_exclude_id: excludeId,
+    p_token:      recipientToken,
+    p_limit:      10,
+  })
+
+  if (!rpc.error && rpc.data && rpc.data.length > 0) {
+    // 配信回数が最小のグループからランダムに1通選ぶ
+    const minCount = (rpc.data[0] as any).delivery_count as number
+    const topPool  = (rpc.data as any[]).filter((r) => r.delivery_count <= minCount + 1)
+    const row      = topPool[Math.floor(Math.random() * topPool.length)]
+    return {
+      id:            row.id,
+      content:       row.content,
+      envelopeColor: row.envelope_color,
+      createdAt:     row.created_at,
+      type:          'received',
+      isAI:          false,
+    }
+  }
+
+  // ── フォールバック: シンプルクエリ（deliveries テーブル未作成時など） ──
   const { data, error } = await supabase
     .from('letters')
     .select('id, content, envelope_color, is_ai, created_at')
@@ -31,13 +62,26 @@ export async function fetchRandomLetter(excludeId: string): Promise<Letter | nul
   if (error || !data || data.length === 0) return null
   const row = data[Math.floor(Math.random() * data.length)]
   return {
-    id: row.id,
-    content: row.content,
+    id:            row.id,
+    content:       row.content,
     envelopeColor: row.envelope_color,
-    createdAt: row.created_at,
-    type: 'received',
-    isAI: false,
+    createdAt:     row.created_at,
+    type:          'received',
+    isAI:          false,
   }
+}
+
+/** 配信を記録する（同一 letter_id + token は DB 側の UNIQUE 制約で重複防止） */
+export async function recordDelivery(
+  letterId: string,
+  recipientToken: string,
+): Promise<void> {
+  if (!recipientToken) return
+  await supabase.from('deliveries').insert({
+    letter_id:       letterId,
+    recipient_token: recipientToken,
+  })
+  // UNIQUE 違反（=すでに記録済み）はエラーを無視
 }
 
 export type ReactionRow = {

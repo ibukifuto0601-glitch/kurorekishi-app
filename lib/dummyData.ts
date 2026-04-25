@@ -8,7 +8,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd01',
     content: '夜中に書いたポエムを間違えてクラスのグループLINEに送ってしまった。「月が泣いている、僕の心のように」という一文が翌朝のホームルームのネタになった。',
-    color: 'lavender',
+    color: 'mint',
   },
   {
     id: 'd02',
@@ -53,7 +53,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd10',
     content: '席替えで好きな人の隣になれたが、嬉しすぎてその日一日まともに喋れず、帰り際に唯一発した言葉が「…お疲れ」だった。',
-    color: 'lavender',
+    color: 'mint',
   },
   {
     id: 'd11',
@@ -78,7 +78,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd15',
     content: '好きな人の誕生日に花束を持ってサプライズしに行ったら、誕生日を1ヶ月間違えていた。相手が気を使って受け取ってくれたのがさらに辛かった。',
-    color: 'lavender',
+    color: 'mint',
   },
   {
     id: 'd16',
@@ -103,7 +103,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd20',
     content: '昼休みにこっそり食べていたグミを先生に没収されたが、袋の中で溶けてひとつの巨大グミの塊になっていた。先生も固まっていた。',
-    color: 'lavender',
+    color: 'mint',
   },
   {
     id: 'd21',
@@ -128,7 +128,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd25',
     content: 'カラオケでノリノリで熱唱していたら、マイクのスイッチが切れていて自分の生声だけが部屋に響いていた。3番まで気づかなかった。',
-    color: 'lavender',
+    color: 'mint',
   },
   {
     id: 'd26',
@@ -153,7 +153,7 @@ export const AI_DUMMY_STORIES: DummyStory[] = [
   {
     id: 'd30',
     content: '授業中に先生に当てられて、なんとなく思いついた答えを言ったら奇跡的に合っていた。喜んでいたら、その後毎回当てられるようになった。',
-    color: 'lavender',
+    color: 'mint',
   },
 ]
 

@@ -56,15 +56,6 @@ export const ENVELOPE_COLORS: EnvelopeColorDef[] = [
     emoji: '🌿',
     gradient: 'from-emerald-300 to-teal-400',
   },
-  {
-    id: 'lavender',
-    name: 'ラベンダー',
-    bg: '#D4B3FF',
-    dark: '#B07FFF',
-    light: '#ECDCFF',
-    emoji: '💜',
-    gradient: 'from-violet-300 to-purple-400',
-  },
 ]
 
 export const SAMPLE_TEXTS = [

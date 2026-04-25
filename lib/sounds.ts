@@ -111,31 +111,38 @@ export function playBurn(): void {
   })
 }
 
-// Smooth "shuu" whoosh for envelope open
+// Quiet smooth "shuu" for envelope open
 export function playOpen(): void {
   withCtx((ac) => {
     const now = ac.currentTime
 
-    // 「シュ〜」: ホワイトノイズをバンドパスで成形し高域→中域へスイープ
     const src = ac.createBufferSource()
-    src.buffer = makeNoise(ac, 0.55)
+    src.buffer = makeNoise(ac, 0.7)
 
+    // ハイシェルフで高域だけ残してシュ感を出す
     const filt = ac.createBiquadFilter()
-    filt.type = 'bandpass'
-    filt.Q.value = 0.9
-    filt.frequency.setValueAtTime(3800, now)
-    filt.frequency.exponentialRampToValueAtTime(600, now + 0.38)
+    filt.type = 'highshelf'
+    filt.frequency.value = 2800
+    filt.gain.value = 6
 
+    // ローパスで耳障りな超高域をカット
+    const lp = ac.createBiquadFilter()
+    lp.type = 'lowpass'
+    lp.frequency.setValueAtTime(5000, now)
+    lp.frequency.exponentialRampToValueAtTime(1200, now + 0.45)
+
+    // ゆっくり立ち上がってなめらかに消える（ポップ音を防ぐ）
     const g = ac.createGain()
     g.gain.setValueAtTime(0.0001, now)
-    g.gain.linearRampToValueAtTime(0.28, now + 0.018)   // 素早く立ち上がる
-    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.50) // なめらかに消える
+    g.gain.exponentialRampToValueAtTime(0.07, now + 0.06)
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.60)
 
     src.connect(filt)
-    filt.connect(g)
+    filt.connect(lp)
+    lp.connect(g)
     g.connect(ac.destination)
     src.start(now)
-    src.stop(now + 0.55)
+    src.stop(now + 0.65)
   })
 }
 

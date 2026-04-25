@@ -86,7 +86,7 @@ export default function ReactionBar({ initialReaction, initialComment, onSave }:
       </div>
 
       {/* Comment + send */}
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-col gap-2">
         <input
           type="text"
           value={comment}
@@ -94,7 +94,7 @@ export default function ReactionBar({ initialReaction, initialComment, onSave }:
           placeholder={locked ? 'もう送ったよ' : 'ひとことツッコんでみて（なくてもOK）'}
           maxLength={50}
           disabled={locked}
-          className="flex-1 px-3 py-2 text-sm rounded-xl transition-colors"
+          className="w-full px-3 py-2.5 text-sm rounded-xl transition-colors"
           style={{
             border: `1.5px solid ${C.border}`,
             backgroundColor: locked ? C.surface2 : '#fff',
@@ -105,7 +105,7 @@ export default function ReactionBar({ initialReaction, initialComment, onSave }:
         <button
           onClick={handleSave}
           disabled={locked}
-          className="px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95"
+          className="w-full py-3 rounded-xl text-sm font-bold transition-all active:scale-95"
           style={{
             backgroundColor: locked ? C.surface2 : C.primary,
             color: locked ? C.muted : '#fff',
@@ -113,7 +113,7 @@ export default function ReactionBar({ initialReaction, initialComment, onSave }:
             boxShadow: locked ? 'none' : '0 2px 8px rgba(196,99,122,0.35)',
           }}
         >
-          {locked ? '送ったよ' : '送る！'}
+          {locked ? '✅ 送ったよ！' : '送る！'}
         </button>
       </div>
     </div>

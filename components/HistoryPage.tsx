@@ -288,7 +288,7 @@ export default function HistoryPage() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div key={tab} className="flex flex-col gap-2">
           <p className="text-xs text-right" style={{ color: 'rgba(255,255,255,0.25)' }}>
             {filtered.length}件 / max30
           </p>
