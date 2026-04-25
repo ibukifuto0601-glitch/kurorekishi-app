@@ -53,13 +53,25 @@ export async function fetchRandomLetter(
   }
 
   // ── フォールバック: シンプルクエリ（deliveries テーブル未作成時など） ──
-  const { data, error } = await supabase
+  // このトークンにすでに届いた手紙IDを取得して除外
+  const { data: delivered } = await supabase
+    .from('deliveries')
+    .select('letter_id')
+    .eq('recipient_token', recipientToken)
+  const deliveredIds = (delivered ?? []).map((r: { letter_id: string }) => r.letter_id)
+
+  const baseQuery = supabase
     .from('letters')
     .select('id, content, envelope_color, is_ai, created_at')
     .neq('id', excludeId)
     .eq('is_ai', false)
     .neq('sender_token', recipientToken)
     .limit(50)
+
+  const { data, error } = deliveredIds.length > 0
+    ? await baseQuery.not('id', 'in', `(${deliveredIds.join(',')})`)
+    : await baseQuery
+
   if (error || !data || data.length === 0) return null
   const row = data[Math.floor(Math.random() * data.length)]
   return {
