@@ -111,31 +111,31 @@ export function playBurn(): void {
   })
 }
 
-// Paper crinkle + whoosh for envelope open
+// Smooth "shuu" whoosh for envelope open
 export function playOpen(): void {
   withCtx((ac) => {
-    const crinkle: [number, number, number, number][] = [
-      [3600, 0.035, 0.32, 0],  [2900, 0.028, 0.26, 0.03],
-      [4200, 0.022, 0.22, 0.07],[3300, 0.038, 0.28, 0.11],
-      [2700, 0.030, 0.20, 0.16],[3900, 0.020, 0.18, 0.20],
-      [2500, 0.025, 0.16, 0.25],
-    ]
-    crinkle.forEach(([f, d, v, t]) => burst(ac, f, d, v, t))
+    const now = ac.currentTime
 
+    // 「シュ〜」: ホワイトノイズをバンドパスで成形し高域→中域へスイープ
     const src = ac.createBufferSource()
-    src.buffer = makeNoise(ac, 0.38)
+    src.buffer = makeNoise(ac, 0.55)
+
     const filt = ac.createBiquadFilter()
-    filt.type = 'lowpass'
-    filt.frequency.setValueAtTime(5500, ac.currentTime + 0.04)
-    filt.frequency.exponentialRampToValueAtTime(280, ac.currentTime + 0.42)
+    filt.type = 'bandpass'
+    filt.Q.value = 0.9
+    filt.frequency.setValueAtTime(3800, now)
+    filt.frequency.exponentialRampToValueAtTime(600, now + 0.38)
+
     const g = ac.createGain()
-    g.gain.setValueAtTime(0.20, ac.currentTime + 0.04)
-    g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.46)
+    g.gain.setValueAtTime(0.0001, now)
+    g.gain.linearRampToValueAtTime(0.28, now + 0.018)   // 素早く立ち上がる
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.50) // なめらかに消える
+
     src.connect(filt)
     filt.connect(g)
     g.connect(ac.destination)
-    src.start(ac.currentTime + 0.04)
-    src.stop(ac.currentTime + 0.50)
+    src.start(now)
+    src.stop(now + 0.55)
   })
 }
 
