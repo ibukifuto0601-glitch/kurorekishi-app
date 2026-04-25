@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ENVELOPE_COLORS, SAMPLE_TEXTS } from '@/lib/types'
-import { savePendingLetter, addToHistory, generateId } from '@/lib/storage'
+import { savePendingLetter, addToHistory, generateId, getOrCreateRecipientToken } from '@/lib/storage'
 import { insertLetter } from '@/lib/supabase'
 import { C, SHADOW } from '@/lib/tokens'
 import BonfireAnimation from './BonfireAnimation'
@@ -48,8 +48,9 @@ export default function WritePage() {
     setSending(true)
 
     const trimmed = content.trim()
+    const senderToken = getOrCreateRecipientToken()
     // Supabase に保存して UUID を取得（失敗時はローカル ID にフォールバック）
-    const supabaseId = await insertLetter(trimmed, selectedColor)
+    const supabaseId = await insertLetter(trimmed, selectedColor, senderToken)
     const id = supabaseId ?? generateId()
 
     const letter = {

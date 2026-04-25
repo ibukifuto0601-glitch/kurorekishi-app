@@ -7,10 +7,10 @@ const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const supabase = createClient(url, key)
 
 /** letters テーブルに投稿を保存し、生成された UUID を返す */
-export async function insertLetter(content: string, envelopeColor: string): Promise<string | null> {
+export async function insertLetter(content: string, envelopeColor: string, senderToken: string): Promise<string | null> {
   const { data, error } = await supabase
     .from('letters')
-    .insert({ content, envelope_color: envelopeColor, is_ai: false })
+    .insert({ content, envelope_color: envelopeColor, is_ai: false, sender_token: senderToken })
     .select('id')
     .single()
   if (error) {
@@ -58,6 +58,7 @@ export async function fetchRandomLetter(
     .select('id, content, envelope_color, is_ai, created_at')
     .neq('id', excludeId)
     .eq('is_ai', false)
+    .neq('sender_token', recipientToken)
     .limit(50)
   if (error || !data || data.length === 0) return null
   const row = data[Math.floor(Math.random() * data.length)]
