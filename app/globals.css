@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ── */
+:root {
+  /* Background */
+  --app-bg: linear-gradient(160deg, #060b18 0%, #0f0826 50%, #1a0d35 80%, #0c1828 100%);
+
+  /* Primary — くすんだローズ */
+  --color-primary:       #c4637a;
+  --color-primary-dark:  #a84e63;
+  --color-primary-light: #f2d5da;
+
+  /* Surface */
+  --color-surface:       #faf8f4;
+  --color-surface-2:     #f2ede6;
+
+  /* Neutral */
+  --color-text:          #1c1917;
+  --color-text-muted:    #78716c;
+  --color-border:        #e7e2db;
+
+  /* Elevation shadows */
+  --shadow-low:  0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-mid:  0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+  --shadow-high: 0 8px 28px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.10);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+/* Envelope 3D */
+.envelope-wrapper {
+  perspective: 1000px;
+  perspective-origin: center 40%;
+}
+
+/* Letter ruled lines */
+.letter-lines::after {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    #ece8e0 27px,
+    #ece8e0 28px
+  );
+  background-position: 0 44px;
+  pointer-events: none;
+}
+
+/* Glass — dark edition */
+.glass {
+  background: rgba(18, 14, 12, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Safe area */
+.nav-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Focus ring */
+textarea:focus, input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary-light), 0 0 0 4px rgba(196,99,122,0.2);
+}
